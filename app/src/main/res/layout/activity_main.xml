@@ -1,0 +1,81 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent" >
+
+
+	<com.example.administrator.rainmusic.weiget.SlideMenu
+		android:id="@+id/slide_menu"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" >
+		<include layout="@layout/layout_menu" />
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:background="@drawable/bg_main"
+			>
+
+			<ListView
+				android:id="@+id/listview"
+				android:layout_width="match_parent"
+				android:layout_height="500dp"/>
+
+
+			<RelativeLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_alignParentBottom="true"
+
+				>
+				<Button
+					android:id="@+id/skip"
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+					android:layout_alignParentLeft="true"
+					android:layout_alignParentBottom="true"
+					android:background="@drawable/ic_action_music"
+					/>
+				<Button
+					android:id="@+id/main_btn_previous"
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+					android:layout_toRightOf="@id/skip"
+					android:layout_alignParentBottom="true"
+					android:layout_marginRight="55dp"
+					android:background="@drawable/btn_play_prev"
+					/>
+				<Button
+					android:id="@+id/main_fm_btn_play"
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+					android:layout_alignParentBottom="true"
+					android:layout_toRightOf="@id/main_btn_previous"
+					android:layout_marginRight="55dp"
+					android:background="@drawable/fm_btn_pause"
+					/>
+				<Button
+					android:id="@+id/main_btn_next"
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+					android:layout_toRightOf="@id/main_fm_btn_play"
+					android:layout_alignParentBottom="true"
+					android:layout_marginRight="50dp"
+					android:background="@drawable/btn_play_next"
+					/>
+				<Button
+					android:id="@+id/play_model"
+					android:layout_width="30dp"
+					android:layout_height="50dp"
+					android:layout_alignParentRight="true"
+					android:layout_alignParentBottom="true"
+					android:background="@drawable/ic_play_sequence"
+					/>
+			</RelativeLayout>
+		</RelativeLayout>
+	</com.example.administrator.rainmusic.weiget.SlideMenu>
+
+
+</RelativeLayout>
+
+
+  

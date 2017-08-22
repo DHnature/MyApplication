@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical" >
+
+        <TextView
+            android:text="time"
+            android:id="@+id/music_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:textColor="#FFADABFF"
+            />
+        <TextView
+            android:text="name"
+            android:id="@+id/music_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:focusable="true"
+            android:textColor="#FFADABFF"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:text="singer"
+            android:id="@+id/music_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_below="@id/music_title"
+            
+            android:textColor="#FFADABFF"
+            />
+       <Button 
+            android:id="@+id/music_favorite"
+            android:background="@drawable/ic_cancle_like"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:layout_below="@id/music_duration"
+            android:layout_alignParentRight="true"
+           />
+    </RelativeLayout>
+</RelativeLayout>

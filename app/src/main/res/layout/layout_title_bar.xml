@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_title_bar2"
+    android:gravity="center_vertical" >
+
+    <Button
+        android:id="@+id/title_bar_menu_btn"
+        android:layout_width="45dip"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="3.0dip"
+        android:layout_marginRight="3.0dip"
+        android:layout_marginTop="3.0dip"
+        android:gravity="center"
+        android:background="@drawable/ic_action_list" />
+
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="本地音乐"
+       android:layout_centerVertical="true"
+       android:layout_centerHorizontal="true"/>
+
+   
+
+</RelativeLayout>
