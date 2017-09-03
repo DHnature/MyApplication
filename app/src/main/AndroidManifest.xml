@@ -24,7 +24,8 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
-        android:theme="@style/test" >
+        android:theme="@style/test"
+        android:persistent="true"  >
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >

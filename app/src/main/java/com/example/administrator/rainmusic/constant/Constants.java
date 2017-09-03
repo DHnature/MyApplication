@@ -11,7 +11,6 @@ public class Constants {
     public static final int ROTATE_OPEN = 6;
     public static final int ROTATE_CLOSE = 7;
     public static final int OPEARTION_PLAY = 8;
-    public static final int OPEARTION_PAUSE = 9;
     public static final int OPEARTION_NEXT_MUSIC = 10;
     public static final int OPEARTION_PREVIOUS_MUSIC = 11;
     public static final int START_TYPE_NEW_MUSIC = 12;
@@ -30,5 +29,7 @@ public class Constants {
     public static final int REGISITER = 24;
     public static final int LYRIC_SCROLL = 25;
     public static final int LYRIC_SKIP=26;
+    public static final int NORMALLIST=27;
+    public static final int COLLECTIONLIST=28;
 
 }

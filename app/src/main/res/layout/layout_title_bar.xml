@@ -21,7 +21,8 @@
        android:layout_height="wrap_content"
        android:text="本地音乐"
        android:layout_centerVertical="true"
-       android:layout_centerHorizontal="true"/>
+       android:layout_centerHorizontal="true"
+       android:textColor="@color/black"/>
 
    
 

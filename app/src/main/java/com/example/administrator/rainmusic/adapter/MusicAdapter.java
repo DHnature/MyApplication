@@ -73,8 +73,9 @@ private MyDatabaseHelper databaseHelper;
 				        intent.putExtra("user", "twb");
 				        intent.putExtra("iffavorite", Constants.NOTFAVORITE);
 				        mcontext.sendBroadcast(intent);
-				        
 					}
+					Intent intent=new Intent("com.example.update_collection");
+                    mcontext.sendBroadcast(intent);
 				}
 			});
 			view.setTag(viewHolder);

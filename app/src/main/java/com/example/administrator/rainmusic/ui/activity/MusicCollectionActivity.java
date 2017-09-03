@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-
 import com.example.administrator.rainmusic.MainActivity;
 import com.example.administrator.rainmusic.R;
 import com.example.administrator.rainmusic.config.MyApplication;
@@ -20,14 +19,12 @@ import com.example.administrator.rainmusic.service.PlayerService;
 import com.example.administrator.rainmusic.utils.CollectionFinderUtils;
 import com.example.administrator.rainmusic.weiget.RefreshableView;
 
-import java.io.Serializable;
-
 public class MusicCollectionActivity extends Activity implements OnItemClickListener {
 	
 	private ListView listView;
 	private RefreshableView refreshableView;
 	private CollectionFinderUtils finder;
-	public static int  currentCollectionMusicPosition=0;
+
 	public static int count;
 	
 	private Handler handler=new Handler(){
@@ -54,7 +51,8 @@ public class MusicCollectionActivity extends Activity implements OnItemClickList
           MainActivity.favoritemusiclist=finder.getCollectionMusic(this);
           count=finder.getcount();
 	      finder.setListAdpter(MyApplication.getContext(),MainActivity.favoritemusiclist,listView);
-		  listView.setOnItemClickListener(this);  
+		  listView.setOnItemClickListener(this);
+
 		  
 //下拉刷新
 		  refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener(){
@@ -77,16 +75,12 @@ public class MusicCollectionActivity extends Activity implements OnItemClickList
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
+         MainActivity.currentMusicList=Constants.COLLECTIONLIST;
 		 Intent intent=new Intent(this, PlayerService.class);
-         intent.putExtra("musicList",(Serializable)MainActivity.favoritemusiclist);
-		 intent.putExtra("start_type", Constants.START_TYPE_NEW_MUSIC_COLLECTION);
-		 currentCollectionMusicPosition=position;
+
+		 MainActivity.collectionMusicPosition =position;
 		 startService(intent);
-		 
-	
-		    
-		
-	}
+}
 	
 	
 		

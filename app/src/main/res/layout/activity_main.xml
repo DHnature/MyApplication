@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent" >
 
@@ -7,7 +8,7 @@
 		android:id="@+id/slide_menu"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent" >
-		<include layout="@layout/layout_menu" />
+		<include layout="@layout/fragment_main_left" />
 
 		<RelativeLayout
 			android:layout_width="match_parent"
@@ -35,33 +36,26 @@
 					android:layout_alignParentBottom="true"
 					android:background="@drawable/ic_action_music"
 					/>
-				<Button
-					android:id="@+id/main_btn_previous"
-					android:layout_width="50dp"
-					android:layout_height="50dp"
-					android:layout_toRightOf="@id/skip"
+
+				<TextView
+					android:id="@+id/music_name_bar"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="这是歌曲"
+					android:layout_alignTop="@+id/skip"
+					android:layout_alignLeft="@+id/music_artist_bar"
+					android:layout_alignStart="@+id/music_artist_bar" />
+                <TextView
+                    android:id="@+id/music_artist_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+					android:text="这是歌手"
 					android:layout_alignParentBottom="true"
-					android:layout_marginRight="55dp"
-					android:background="@drawable/btn_play_prev"
-					/>
-				<Button
-					android:id="@+id/main_fm_btn_play"
-					android:layout_width="50dp"
-					android:layout_height="50dp"
-					android:layout_alignParentBottom="true"
-					android:layout_toRightOf="@id/main_btn_previous"
-					android:layout_marginRight="55dp"
-					android:background="@drawable/fm_btn_pause"
-					/>
-				<Button
-					android:id="@+id/main_btn_next"
-					android:layout_width="50dp"
-					android:layout_height="50dp"
-					android:layout_toRightOf="@id/main_fm_btn_play"
-					android:layout_alignParentBottom="true"
-					android:layout_marginRight="50dp"
-					android:background="@drawable/btn_play_next"
-					/>
+					android:layout_toRightOf="@+id/skip"
+					android:layout_toEndOf="@+id/skip"
+					android:layout_marginLeft="13dp"
+					android:layout_marginStart="13dp" />
+
 				<Button
 					android:id="@+id/play_model"
 					android:layout_width="30dp"
@@ -70,6 +64,16 @@
 					android:layout_alignParentBottom="true"
 					android:background="@drawable/ic_play_sequence"
 					/>
+                <Button
+                    android:id="@+id/main_fm_btn_play"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="11dp"
+                    android:background="@drawable/fm_btn_pause"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/play_model"
+                    android:layout_toStartOf="@+id/play_model"
+                    android:layout_marginEnd="11dp" />
 			</RelativeLayout>
 		</RelativeLayout>
 	</com.example.administrator.rainmusic.weiget.SlideMenu>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_margin="10dp"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/notify_music_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="要怎么办"
+            android:textSize="12dp"
+            />
+
+        <ImageView
+            android:id="@+id/notification_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/ic_notification2"
+            />
+
+        <TextView
+            android:id="@+id/notify_artist_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/notify_music_name"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="10dp"
+            android:text="李柏凝"
+            android:textSize="10dp"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/notify_btn_play"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/note_btn_play"
+            android:background="#00ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/notify_btn_next"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/desk_next"
+            />
+    </LinearLayout>
+</LinearLayout>

@@ -64,11 +64,12 @@ public class CollectionFinderUtils {
 		databaseHelper=new MyDatabaseHelper(MyApplication.getContext(), "collection", null, 1);
 		databaseHelper.getWritableDatabase();
 		SQLiteDatabase db=databaseHelper.getWritableDatabase();
-		Cursor cursor=db.query("Userinformation",null, null, null, null, null, null);
+		Cursor cursor=db.query("Userinformation1",null, null, null, null, null, null);
 		  if(cursor.moveToFirst()){
-			  do
 				 count++;
-				while(cursor.moveToNext());
+				while(cursor.moveToNext()){
+					count++;
+				}
 		  }
 		
 		

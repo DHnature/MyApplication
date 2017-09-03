@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.example.administrator.rainmusic.MainActivity;
 import com.example.administrator.rainmusic.R;
 import com.example.administrator.rainmusic.config.MyApplication;
@@ -29,7 +30,7 @@ import com.example.administrator.rainmusic.interfaces.PicHttpCallBackListener;
 import com.example.administrator.rainmusic.model.Music;
 import com.example.administrator.rainmusic.service.PlayerService;
 import com.example.administrator.rainmusic.weiget.MusicPlayView;
-import java.io.Serializable;
+
 import java.net.URLEncoder;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -42,17 +43,15 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
     private static int mResource;
     private static Button mPrevious;
     private static int flag = 0;
-    private static int finish=0;
+    private static int finish = 0;
     private Button mPlayPause;
     private Button mNext;
     private SeekBar mSeekBar;
     private TextView mTextViewDuration;
     private TextView mTextViewCurrentTime;
     private TextView title;
-    private int count;
     private List<Music> musiclist;
     private MusicBroadcast musicBroadcast;
-    private MainActivity mainActivity = new MainActivity();
     private MusicName musicName;
 
 
@@ -87,8 +86,8 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                     }
                     flag = 0;
                     for (k = 0; k < i - 1 && flag == 0; k++) {
-                    //finish为了同步插入图片和循环
-                        finish=0;
+                        //finish为了同步插入图片和循环
+                        finish = 0;
                         String path = picpool[k];
                         PictureUtil.loadImageFromNetwork(path, new PicHttpCallBackListener() {
                             @Override
@@ -99,6 +98,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                                 }
                                 finish = 1;
                             }
+
                             @Override
                             public void onError(Exception e) {
                                 Log.d("错误", e.getMessage());
@@ -133,6 +133,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
         mTextViewDuration = (TextView) viewroot.findViewById(R.id.duration_time);
         mTextViewCurrentTime = (TextView) viewroot.findViewById(R.id.current_time);
 
+        title.setText(MainActivity.currentMusic.getTitle());
 
 //设置播放状态图标以及旋转动画
         if (MainActivity.mediaplayer.isPlaying()) {
@@ -160,10 +161,8 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                     }
                 });
 
-        Intent intent = getActivity().getIntent();
-        musiclist = (List<Music>) intent.getSerializableExtra("MusicList");
-        count = intent.getIntExtra("count", 0);
-        title.setText(MainActivity.currentMusic.getTitle());
+
+
 
 
 //歌曲时长
@@ -224,8 +223,6 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                 }
                 intent.putExtra("start_type", Constants.START_TYPE_OPERATION);
                 intent.putExtra("operation", Constants.OPEARTION_PLAY);
-                intent.putExtra("currentPosition", mainActivity.currentPosition);
-                intent.putExtra("musicList", (Serializable) musiclist);
                 getActivity().startService(intent);
 
                 break;
@@ -235,9 +232,6 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                 Intent intent2 = new Intent(getActivity(), PlayerService.class);
                 intent2.putExtra("start_type", Constants.START_TYPE_OPERATION);
                 intent2.putExtra("operation", Constants.OPEARTION_PREVIOUS_MUSIC);
-                intent2.putExtra("currentPosition", mainActivity.currentPosition);
-                intent2.putExtra("count", count);
-                intent2.putExtra("musicList", (Serializable) musiclist);
                 getActivity().startService(intent2);
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -267,9 +261,6 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                 Intent intent3 = new Intent(getActivity(), PlayerService.class);
                 intent3.putExtra("start_type", Constants.START_TYPE_OPERATION);
                 intent3.putExtra("operation", Constants.OPEARTION_NEXT_MUSIC);
-                intent3.putExtra("currentPosition", mainActivity.currentPosition);
-                intent3.putExtra("musicList", (Serializable) musiclist);
-                intent3.putExtra("count", count);
                 getActivity().startService(intent3);
                 Handler handler2 = new Handler();
                 handler2.postDelayed(new Runnable() {
@@ -304,6 +295,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
     public void onDestroy() {
         Log.d("销毁情况", "已被销毁");
         getActivity().unregisterReceiver(musicName);
+        getActivity().unregisterReceiver(musicBroadcast);
         super.onDestroy();
     }
 
@@ -337,15 +329,11 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
 
     }
 
-    //歌曲播放完毕后自动更换标题
+    //歌曲播放完毕后自动更换标题广播
     public class MusicName extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            MainActivity.currentMusic = musiclist.get(MainActivity.currentPosition);
-            title.setText(MainActivity.currentMusic.getTitle());
-        }
-
-    }
-
-
+                title.setText(MainActivity.currentMusic.getTitle());
+ }
+}
 }
