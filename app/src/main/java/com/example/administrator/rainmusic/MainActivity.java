@@ -21,6 +21,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -70,13 +71,14 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
     private Button mskip;
     private Button menuImg;
     private Button mPlayPause;
+    private Button mNext;
     private Button playModel;
     private TextView musicName;
     private TextView musicArtist;
     private TextView collection;
     private SensorManager sensorManager;
     private RoundedImageView roundedImageView;
-    ;
+    private View notification;
 
 
     //传感器监听设置
@@ -102,6 +104,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.CustomTheme);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_main);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.layout_title_bar);
@@ -111,20 +114,19 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
         roundedImageView = (RoundedImageView) findViewById(R.id.headImageView);
         collection = (TextView) findViewById(R.id.toolbox_collection);
         playModel = (Button) findViewById(R.id.play_model);
-
-
         musicName = (TextView) findViewById(R.id.music_name_bar);
         musicArtist = (TextView) findViewById(R.id.music_artist_bar);
-
         listView = (ListView) findViewById(R.id.listview);
         slideMenu = (SlideMenu) findViewById(R.id.slide_menu);
+        notification=(LinearLayout) findViewById(R.id.notification);
+        mNext=(Button)findViewById(R.id.main_fm_btn_next);
 
         mRemoteView = new RemoteViews(this.getPackageName(), R.layout.activity_notification);
         //初始化播放按钮
         if (mediaplayer.isPlaying())
             mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
         else
-            mPlayPause.setBackgroundResource(R.drawable.fm_btn_pause);
+            mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_pause);
 
         // 传感器配置
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -182,11 +184,13 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
 
         listView.setOnItemClickListener(this);
         mPlayPause.setOnClickListener(this);
+        mNext.setOnClickListener(this);
         mskip.setOnClickListener(this);
         menuImg.setOnClickListener(this);
         roundedImageView.setOnClickListener(this);
         collection.setOnClickListener(this);
         playModel.setOnClickListener(this);
+
     }
 
 
@@ -216,12 +220,17 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
             pi = PendingIntent.getService(this, 0, intentPlay, PendingIntent.FLAG_CANCEL_CURRENT);
             mRemoteView.setOnClickPendingIntent(R.id.notify_btn_next, pi);
 
+            Intent intent1=new Intent(MyApplication.getContext(),MainActivity.class);
+            PendingIntent pi2=PendingIntent.getActivity(this,2,intent1,PendingIntent.FLAG_UPDATE_CURRENT);
+            mRemoteView.setOnClickPendingIntent(R.id.notification,pi2);
+
             mBuilder.setSmallIcon(R.drawable.ic_notification2);
             mBuilder.setContent(mRemoteView);
 
 
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(1, mBuilder.build());
+
 
 
         notificationCount++;
@@ -237,7 +246,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
             case R.id.main_fm_btn_play:
                 Intent intent = new Intent(MainActivity.this, PlayerService.class);
                 if (mediaplayer.isPlaying()) {
-                    mPlayPause.setBackgroundResource(R.drawable.fm_btn_pause);
+                    mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_pause);
                 } else {
                     mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
                 }
@@ -245,8 +254,13 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
                 intent.putExtra("operation", Constants.OPEARTION_PLAY);
                 startService(intent);
                 break;
-
-
+            case R.id.main_fm_btn_next:
+                mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
+                Intent intent6 = new Intent(this, PlayerService.class);
+                intent6.putExtra("start_type", Constants.START_TYPE_OPERATION);
+                intent6.putExtra("operation", Constants.OPEARTION_NEXT_MUSIC);
+                startService(intent6);
+                break;
             case R.id.play_model:
                 switch (currentPlayModel) {
                     case Constants.PLAY_MODEL_SEQUENCE:
@@ -292,6 +306,10 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
                 Intent intent4 = new Intent(MainActivity.this, MusicCollectionActivity.class);
                 startActivity(intent4);
                 break;
+
+            case R.id.notification:
+                Intent intent5=new Intent(MyApplication.getContext(),MainActivity.class);
+                startActivity(intent5);
         }
     }
 
@@ -309,7 +327,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
     private class notifyMusicInfoBroadcast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (notificationCount > 1) {
+
                 mRemoteView.setTextViewText(R.id.notify_music_name, currentMusic.getTitle());
                 mRemoteView.setTextViewText(R.id.notify_artist_name, currentMusic.getArtist());
                 if (mediaplayer.isPlaying())
@@ -318,11 +336,11 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
                     mRemoteView.setImageViewResource(R.id.notify_btn_play, R.drawable.note_btn_pause);
                 mBuilder.setContent(mRemoteView);
                 notificationManager.notify(1, mBuilder.build());
-            }
+
 
         }
     }
-
+//更新收藏夹的歌曲
     private class collectionUpdateBroadcast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -337,7 +355,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
         if (mediaplayer.isPlaying())
             mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
         else
-            mPlayPause.setBackgroundResource(R.drawable.fm_btn_pause);
+            mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_pause);
 
         musicName.setText(currentMusic.getTitle());
         musicArtist.setText(currentMusic.getArtist());
@@ -360,7 +378,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
         if (mediaplayer.isPlaying())
             mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
         else
-            mPlayPause.setBackgroundResource(R.drawable.fm_btn_pause);
+            mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_pause);
 
         musicName.setText(currentMusic.getTitle());
         musicArtist.setText(currentMusic.getArtist());

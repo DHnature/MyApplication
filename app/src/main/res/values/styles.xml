@@ -20,5 +20,9 @@
 
 
 
+    <!--title  -->
+    <style name="CustomTheme" >
+        <item name="android:windowTitleBackgroundStyle">@drawable/bg_title_bar</item>//注意这里，如果不写这个就会填充不满，我测试后得到的结果
+    </style>
 
 </resources>

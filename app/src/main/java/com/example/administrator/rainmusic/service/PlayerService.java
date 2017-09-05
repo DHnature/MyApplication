@@ -47,7 +47,6 @@ public class PlayerService extends Service {
         IntentFilter intentFilter2 = new IntentFilter();
         intentFilter2.addAction("com.example.mediaplayer.getDurationTime");
         registerReceiver(seekBarControl, intentFilter2);
-
         switch (startType) {
             case Constants.START_TYPE_NEW_MUSIC:
                 startNewMusic(intent);
@@ -129,15 +128,18 @@ public class PlayerService extends Service {
                 public void onPrepared(MediaPlayer mediaPlayer) {
                     MainActivity.mediaplayer.start();
                     int time = MainActivity.mediaplayer.getDuration();
-                    //发送歌曲时长广播
+                    //发送歌曲总时长广播
                     Intent intent = new Intent("com.example.mediaplayer.musictime");
                     intent.putExtra("Mtime", time);
                     intent.putExtra("type", DURATION_TYPE);
                     sendBroadcast(intent);
-                    //发送消息栏广播
+                    //发送消息栏歌曲更新广播
                     Intent intent1 = new Intent("com.example.notify_music_info_update");
                     sendBroadcast(intent1);
-
+                    //发送播放页面歌曲更新广播
+                    Intent intent2 = new Intent("com.example.mediaplayer.changeNameOfMusicInCircle");
+                    sendBroadcast(intent2);
+                   //开启当前歌曲播放时间线程
                     MusicThread thread = new MusicThread();
                     thread.start();
                 }
@@ -162,18 +164,15 @@ public class PlayerService extends Service {
                             break;
                         case Constants.PLAY_MODEL_RAMDOM:
                             Random rnd = new Random();
-                            int rndint = rnd.nextInt(MainActivity.count);
                             if (MainActivity.currentMusicList == Constants.NORMALLIST)
-                                MainActivity.currentPosition = rndint;
+                                MainActivity.currentPosition = rnd.nextInt(MainActivity.count);
                             else
-                                MainActivity.collectionMusicPosition = rndint;
+                                MainActivity.collectionMusicPosition = rnd.nextInt(MainActivity.colletctionCount);
                             break;
                         case Constants.PLAY_MODEL_SINGLE:
                             break;
                     }
                     new Thread(new LyricFragment.lyricThread()).start();
-                    Intent intent2 = new Intent("com.example.mediaplayer.changeNameOfMusicInCircle");
-                    sendBroadcast(intent2);
 
                     startNewMusic(intent);
                 }
@@ -303,15 +302,12 @@ public class PlayerService extends Service {
         public void onReceive(Context context, Intent intent) {
             DurationThread Thread = new DurationThread();
             Thread.start();
-
-
         }
 
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-
         return null;
     }
 }

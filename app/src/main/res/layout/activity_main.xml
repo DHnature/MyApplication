@@ -23,17 +23,22 @@
 
 
 			<RelativeLayout
-				android:layout_width="match_parent"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_alignParentBottom="true"
 
-				>
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                >
+
 				<Button
 					android:id="@+id/skip"
 					android:layout_width="50dp"
 					android:layout_height="50dp"
-					android:layout_alignParentLeft="true"
 					android:layout_alignParentBottom="true"
+					android:layout_alignParentLeft="true"
 					android:background="@drawable/ic_action_music"
 					/>
 
@@ -41,39 +46,56 @@
 					android:id="@+id/music_name_bar"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="这是歌曲"
-					android:layout_alignTop="@+id/skip"
 					android:layout_alignLeft="@+id/music_artist_bar"
-					android:layout_alignStart="@+id/music_artist_bar" />
-                <TextView
-                    android:id="@+id/music_artist_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-					android:text="这是歌手"
+					android:layout_alignStart="@+id/music_artist_bar"
+					android:layout_alignTop="@+id/skip"
+					android:text="这是歌曲"
+					/>
+
+				<TextView
+					android:id="@+id/music_artist_bar"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
 					android:layout_alignParentBottom="true"
-					android:layout_toRightOf="@+id/skip"
-					android:layout_toEndOf="@+id/skip"
 					android:layout_marginLeft="13dp"
-					android:layout_marginStart="13dp" />
+					android:layout_marginStart="13dp"
+					android:layout_toEndOf="@+id/skip"
+					android:layout_toRightOf="@+id/skip"
+					android:text="这是歌手"
+					/>
 
 				<Button
 					android:id="@+id/play_model"
 					android:layout_width="30dp"
 					android:layout_height="50dp"
-					android:layout_alignParentRight="true"
 					android:layout_alignParentBottom="true"
+					android:layout_alignParentRight="true"
 					android:background="@drawable/ic_play_sequence"
 					/>
+
+				<Button
+					android:id="@+id/main_fm_btn_play"
+					android:layout_width="50dp"
+					android:layout_height="50dp"
+					android:layout_alignParentBottom="true"
+					android:layout_marginEnd="11dp"
+					android:layout_marginRight="11dp"
+					android:layout_toLeftOf="@+id/main_fm_btn_next"
+					android:layout_toStartOf="@+id/main_fm_btn_next"
+					android:background="@drawable/btn_ctrl_pause"
+					/>
+
                 <Button
-                    android:id="@+id/main_fm_btn_play"
+                    android:id="@+id/main_fm_btn_next"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginRight="11dp"
-                    android:background="@drawable/fm_btn_pause"
                     android:layout_alignParentBottom="true"
+                    android:layout_marginEnd="11dp"
+                    android:layout_marginRight="11dp"
                     android:layout_toLeftOf="@+id/play_model"
                     android:layout_toStartOf="@+id/play_model"
-                    android:layout_marginEnd="11dp" />
+                    android:background="@drawable/desk_next"
+                    />
 			</RelativeLayout>
 		</RelativeLayout>
 	</com.example.administrator.rainmusic.weiget.SlideMenu>

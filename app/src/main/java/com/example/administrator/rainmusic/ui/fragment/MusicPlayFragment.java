@@ -41,9 +41,10 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
     private static String picpool[];
     private static MusicPlayView mPlayView;
     private static int mResource;
-    private static Button mPrevious;
+
     private static int flag = 0;
     private static int finish = 0;
+    private Button mPrevious;
     private Button mPlayPause;
     private Button mNext;
     private SeekBar mSeekBar;
@@ -141,7 +142,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
             mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
         } else {
             mPlayView.pause();
-            mPlayPause.setBackgroundResource(R.drawable.fm_btn_pause);
+            mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_pause);
 
         }
 
@@ -160,9 +161,6 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                         mPlayView.previous(mResource);
                     }
                 });
-
-
-
 
 
 //歌曲时长
@@ -216,7 +214,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                 Intent intent = new Intent(getActivity(), PlayerService.class);
                 if (MainActivity.mediaplayer.isPlaying()) {
                     mPlayView.pause();
-                    mPlayPause.setBackgroundResource(R.drawable.fm_btn_pause);
+                    mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_pause);
                 } else {
                     mPlayView.play();
                     mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
@@ -237,7 +235,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        title.setText(MainActivity.currentMusic.getTitle());
+
                         HttpUtil.SearchMusic(MyApplication.getContext(), URLEncoder.
                                         encode(MainActivity.currentMusic.getTitle()),
                                 10, 1, 0, Constants.SEARCH_PICURL, new LyricHttpCallBackListener() {
@@ -266,7 +264,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                 handler2.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        title.setText(MainActivity.currentMusic.getTitle());
+
                         HttpUtil.SearchMusic(MyApplication.getContext(), URLEncoder.
                                 encode(MainActivity.currentMusic.getTitle()), 10, 1, 0, Constants.SEARCH_PICURL, new LyricHttpCallBackListener() {
                             @Override
@@ -333,7 +331,9 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
     public class MusicName extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-                title.setText(MainActivity.currentMusic.getTitle());
- }
-}
+            mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
+            title.setText(MainActivity.currentMusic.getTitle());
+
+        }
+    }
 }
