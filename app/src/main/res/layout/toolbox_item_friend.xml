@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="65.0dip"
-    android:background="@drawable/tool_box_fragment_bg_selector"
+                android:id="@+id/toolbox_friends"
+                android:layout_width="fill_parent"
+                android:layout_height="65.0dip"
+                android:background="@drawable/tool_box_fragment_bg_selector"
     >
 
     <TextView
-        android:id="@+id/toolbox_title"
+        android:id="@+id/toolbox_friends_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -15,14 +16,14 @@
         android:drawablePadding="20.0dip"
         android:gravity="center"
         android:singleLine="true"
-        android:text="朋友圈"
+        android:text="我的好友"
         android:textColor="#ffccccc6"
         android:textSize="16.0sp"
         android:textStyle="bold"
         />
 
     <ImageView
-        android:id="@+id/notification_indicator"
+        android:id="@+id/toolbox_friedns_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

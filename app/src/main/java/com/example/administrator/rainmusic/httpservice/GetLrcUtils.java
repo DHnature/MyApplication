@@ -4,7 +4,6 @@ package com.example.administrator.rainmusic.httpservice;
  * Created by Administrator on 2017/7/28.
  */
 
-import com.example.administrator.rainmusic.httpservice.LrcGetUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -22,7 +21,7 @@ public class GetLrcUtils {
 
         sentList = new ArrayList<String>();
 
-        String string = LrcGetUtils.query(title, artist);
+        String string = GetLrcUtils2.query(title, artist);
 
         if (null == string) {
 

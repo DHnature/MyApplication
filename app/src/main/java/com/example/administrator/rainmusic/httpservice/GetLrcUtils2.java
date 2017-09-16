@@ -16,7 +16,7 @@ import java.util.Iterator;
 /**
  * @author wgq
  */
-public class LrcGetUtils {
+public class GetLrcUtils2 {
 
     public static String query(String title, String artist) {
         String URL = "http://ttlrcct.qianqian.com/dll/lyricsvr.dll?sh?Artist={ar}&Title={ti}&Flags=0";
@@ -27,7 +27,7 @@ public class LrcGetUtils {
 
         try {
 
-            result = HttpGetUtils.get(URL);
+            result = GetLrcUtils3.get(URL);
 
             Document doc = new SAXReader().read(new StringReader(result));
 
@@ -76,7 +76,7 @@ public class LrcGetUtils {
 
                     verifyCode(artist, title, Integer.parseInt(result, 10)));
 
-            return HttpGetUtils.get(URL);
+            return GetLrcUtils3.get(URL);
 
         } catch (NumberFormatException e) {
 

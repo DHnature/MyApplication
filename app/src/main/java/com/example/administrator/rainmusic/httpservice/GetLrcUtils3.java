@@ -13,26 +13,26 @@ import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HttpGetUtils {
+public class GetLrcUtils3 {
 
     public static void main(String[] args) throws IOException {
 
-        System.out.println(HttpGetUtils.get("http://www.iscripts.org/", "utf-8"));
+        System.out.println(GetLrcUtils3.get("http://www.iscripts.org/", "utf-8"));
 
     }
 
     public static String get(String strURL) throws IOException {
 
-        URLConnection conn = HttpGetUtils.openURL(strURL);
+        URLConnection conn = GetLrcUtils3.openURL(strURL);
 
-        return HttpGetUtils.read(conn.getInputStream(),
-                HttpGetUtils.getContentEncoding(conn));
+        return GetLrcUtils3.read(conn.getInputStream(),
+                GetLrcUtils3.getContentEncoding(conn));
 
     }
 
     public static String get(String strURL, String encoding) throws IOException {
 
-        return HttpGetUtils.read(HttpGetUtils.openURL(strURL).getInputStream(), encoding);
+        return GetLrcUtils3.read(GetLrcUtils3.openURL(strURL).getInputStream(), encoding);
 
     }
 

@@ -32,7 +32,7 @@ public class RegisterServiceUtils {
                 is = conn.getInputStream();
                 return parseInfo(is);
             }
-            return null;
+            return "服务器配置错误！";
         } catch (Exception e) {
             e.printStackTrace();
         }finally{

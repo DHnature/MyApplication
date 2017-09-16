@@ -10,15 +10,13 @@ import java.net.URL;
 
 public class LoginServiceUtils {
 	
-	public  final static String IP="192.168.23.1:8080";
+	public  final static String IP="192.168.2.100:8080";
 
 
 	public static String executeHttpGet(String username, String password, int type){
 		
 		HttpURLConnection conn=null;
 		InputStream is = null;
-
-
 		try {
             String path3 = "http://" + IP + "/web/LogLet";
             path3 += "?username=" + username + "&password=" + password;
@@ -29,10 +27,10 @@ public class LoginServiceUtils {
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Charset", "UTF-8");
 			if(conn.getResponseCode()==200){
-				is = conn.getInputStream();
+                is = conn.getInputStream();
 				return parseInfo(is);
 			}
-			      return null;
+			      return "服务器配置错误！";
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally{

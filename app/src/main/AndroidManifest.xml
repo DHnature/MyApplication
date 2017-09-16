@@ -42,6 +42,8 @@
         </activity>
         <activity android:name=".ui.activity.MusicCollectionActivity">
         </activity>
+        <activity android:name=".ui.activity.SettingActivity">
+        </activity>
 
         <service android:name=".service.PlayerService" >
         </service>

@@ -36,8 +36,8 @@ public class MusicCollectionActivity extends Activity implements OnItemClickList
             switch (msg.what) {
                 case Constants.REFRESH:
                     finder = new CollectionFinderUtils();
-                    MainActivity.favoritemusiclist = finder.getCollectionMusic(MyApplication.getContext());
-                    finder.setListAdpter(MyApplication.getContext(), MainActivity.favoritemusiclist, listView);
+                    MainActivity.favoriteMusicList = finder.getCollectionMusic(MyApplication.getContext());
+                    finder.setListAdpter(MyApplication.getContext(), MainActivity.favoriteMusicList, listView);
             }
         }
 
@@ -51,16 +51,16 @@ public class MusicCollectionActivity extends Activity implements OnItemClickList
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_music_collection);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.layout_col_title_bar);
-        listView = (ListView) findViewById(R.id.listview);
+        listView = (ListView) findViewById(R.id.listView);
         mPlayPause=(Button) findViewById(R.id.coll_btn_play_pause);
         mPrevious=(Button)findViewById(R.id.coll_btn_previous);
         mNext=(Button) findViewById(R.id.coll_btn_next);
 
         refreshableView = (RefreshableView) findViewById(R.id.refreshable_view);
         finder = new CollectionFinderUtils();
-        MainActivity.favoritemusiclist = finder.getCollectionMusic(this);
+        MainActivity.favoriteMusicList = finder.getCollectionMusic(this);
         count = finder.getcount();
-        finder.setListAdpter(MyApplication.getContext(), MainActivity.favoritemusiclist, listView);
+        finder.setListAdpter(MyApplication.getContext(), MainActivity.favoriteMusicList, listView);
 
         listView.setOnItemClickListener(this);
         mPlayPause.setOnClickListener(this);

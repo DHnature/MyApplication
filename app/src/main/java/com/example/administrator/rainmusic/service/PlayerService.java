@@ -12,7 +12,6 @@ import android.os.IBinder;
 import com.example.administrator.rainmusic.MainActivity;
 import com.example.administrator.rainmusic.constant.Constants;
 import com.example.administrator.rainmusic.model.Music;
-import com.example.administrator.rainmusic.ui.fragment.LyricFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -107,10 +106,10 @@ public class PlayerService extends Service {
 
     private void startNewMusic(final Intent intent) {
         if (MainActivity.currentMusicList == Constants.NORMALLIST) {
-            musiclist = MainActivity.musiclist;
+            musiclist = MainActivity.musicList;
             position = MainActivity.currentPosition;
         } else {
-            musiclist = MainActivity.favoritemusiclist;
+            musiclist = MainActivity.favoriteMusicList;
             position = MainActivity.collectionMusicPosition;
         }
         MainActivity.currentMusic = musiclist.get(position);
@@ -136,9 +135,15 @@ public class PlayerService extends Service {
                     //发送消息栏歌曲更新广播
                     Intent intent1 = new Intent("com.example.notify_music_info_update");
                     sendBroadcast(intent1);
-                    //发送播放页面歌曲更新广播
+                    //发送播放页面歌曲标题更新广播
                     Intent intent2 = new Intent("com.example.mediaplayer.changeNameOfMusicInCircle");
                     sendBroadcast(intent2);
+                    //发送歌词页面更新广播
+                    Intent intent3 = new Intent("com.example.lyricUpdate");
+                    sendBroadcast(intent3);
+                    //发送图片页面更新广播
+                    Intent intent4=new Intent("com.example.picUpdate");
+                    sendBroadcast(intent4);
                    //开启当前歌曲播放时间线程
                     MusicThread thread = new MusicThread();
                     thread.start();
@@ -156,7 +161,7 @@ public class PlayerService extends Service {
                                 else
                                     MainActivity.currentPosition = 0;
                             } else {
-                                if (MainActivity.collectionMusicPosition + 1 <= MainActivity.colletctionCount - 1)
+                                if (MainActivity.collectionMusicPosition + 1 <= MainActivity.collectionCount - 1)
                                     MainActivity.collectionMusicPosition += 1;
                                 else
                                     MainActivity.collectionMusicPosition = 0;
@@ -167,13 +172,11 @@ public class PlayerService extends Service {
                             if (MainActivity.currentMusicList == Constants.NORMALLIST)
                                 MainActivity.currentPosition = rnd.nextInt(MainActivity.count);
                             else
-                                MainActivity.collectionMusicPosition = rnd.nextInt(MainActivity.colletctionCount);
+                                MainActivity.collectionMusicPosition = rnd.nextInt(MainActivity.collectionCount);
                             break;
                         case Constants.PLAY_MODEL_SINGLE:
                             break;
                     }
-                    new Thread(new LyricFragment.lyricThread()).start();
-
                     startNewMusic(intent);
                 }
 
@@ -206,11 +209,11 @@ public class PlayerService extends Service {
                     if (MainActivity.collectionMusicPosition - 1 >= 0)
                         MainActivity.collectionMusicPosition -= 1;
                     else
-                        MainActivity.collectionMusicPosition = MainActivity.colletctionCount - 1;
+                        MainActivity.collectionMusicPosition = MainActivity.collectionCount - 1;
                     break;
                 case Constants.PLAY_MODEL_RAMDOM:
                     Random rnd = new Random();
-                    MainActivity.collectionMusicPosition = rnd.nextInt(MainActivity.colletctionCount - 1);
+                    MainActivity.collectionMusicPosition = rnd.nextInt(MainActivity.collectionCount - 1);
                     break;
                 case Constants.PLAY_MODEL_SINGLE:
                     break;
@@ -241,7 +244,7 @@ public class PlayerService extends Service {
 
             switch (MainActivity.currentPlayModel) {
                 case Constants.PLAY_MODEL_SEQUENCE:
-                    if (MainActivity.collectionMusicPosition + 1 <= MainActivity.colletctionCount - 1)
+                    if (MainActivity.collectionMusicPosition + 1 <= MainActivity.collectionCount - 1)
                         MainActivity.collectionMusicPosition += 1;
 
                     else
@@ -249,7 +252,7 @@ public class PlayerService extends Service {
                     break;
                 case Constants.PLAY_MODEL_RAMDOM:
                     Random rnd = new Random();
-                    MainActivity.collectionMusicPosition = rnd.nextInt(MainActivity.colletctionCount - 1);
+                    MainActivity.collectionMusicPosition = rnd.nextInt(MainActivity.collectionCount - 1);
                     break;
                 case Constants.PLAY_MODEL_SINGLE:
                     break;

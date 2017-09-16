@@ -21,18 +21,17 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.administrator.rainmusic.config.MyApplication;
 import com.example.administrator.rainmusic.constant.Constants;
 import com.example.administrator.rainmusic.model.Music;
 import com.example.administrator.rainmusic.service.PlayerService;
 import com.example.administrator.rainmusic.ui.activity.LoginActivity;
 import com.example.administrator.rainmusic.ui.activity.MusicCollectionActivity;
+import com.example.administrator.rainmusic.ui.activity.SettingActivity;
 import com.example.administrator.rainmusic.ui.fragment.MusicSurfaceFragment;
 import com.example.administrator.rainmusic.utils.CollectionFinderUtils;
 import com.example.administrator.rainmusic.utils.FindSongsUtils;
@@ -50,13 +49,13 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
     private NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
     private NotificationManager notificationManager ;
 
-    public static List<Music> musiclist;
+    public static List<Music> musicList;
     public static int count;
     public static int currentPosition = 0;
 
-    public static List<Music> favoritemusiclist = null;
+    public static List<Music> favoriteMusicList = null;
     public static int collectionMusicPosition = 0;
-    public static int colletctionCount = 0;
+    public static int collectionCount = 0;
 
     public static int currentMusicList = Constants.NORMALLIST;
     public static  MediaPlayer mediaplayer = new MediaPlayer();
@@ -65,7 +64,9 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
     public static CollectionFinderUtils finder2;
     public static int notificationCount = 0;
 
-    private bottomMusicInfoBroadcast musicinfo;
+    public static boolean sensorSetting=false;
+
+    private bottomMusicInfoBroadcast musicInfo;
     private notifyMusicInfoBroadcast notifyMusicInfo;
     private collectionUpdateBroadcast collectionUpdateBroadcast;
     private Button mskip;
@@ -76,9 +77,11 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
     private TextView musicName;
     private TextView musicArtist;
     private TextView collection;
+    private TextView setting;
     private SensorManager sensorManager;
     private RoundedImageView roundedImageView;
     private View notification;
+
 
 
     //传感器监听设置
@@ -87,14 +90,13 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
             float xValue = Math.abs(event.values[0]);
             float yValue = Math.abs(event.values[1]);
             float zValue = Math.abs(event.values[2]);
-            if (xValue > 20 || yValue > 20 || zValue > 20) {
+            if ((xValue > 20 || yValue > 20 || zValue > 20)&&sensorSetting) {
                 Intent intent = new Intent(MainActivity.this, PlayerService.class);
                 intent.putExtra("start_type", Constants.START_TYPE_OPERATION);
                 intent.putExtra("operation", Constants.OPEARTION_NEXT_MUSIC);
                 startService(intent);
             }
         }
-
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
         }
@@ -111,15 +113,17 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
         mPlayPause = (Button) findViewById(R.id.main_fm_btn_play);
         menuImg = (Button) findViewById(R.id.title_bar_menu_btn);
         mskip = (Button) findViewById(R.id.skip);
-        roundedImageView = (RoundedImageView) findViewById(R.id.headImageView);
-        collection = (TextView) findViewById(R.id.toolbox_collection);
+        mNext=(Button)findViewById(R.id.main_fm_btn_next);
         playModel = (Button) findViewById(R.id.play_model);
+        roundedImageView = (RoundedImageView) findViewById(R.id.headImageView);
         musicName = (TextView) findViewById(R.id.music_name_bar);
         musicArtist = (TextView) findViewById(R.id.music_artist_bar);
-        listView = (ListView) findViewById(R.id.listview);
+        listView = (ListView) findViewById(R.id.listView);
         slideMenu = (SlideMenu) findViewById(R.id.slide_menu);
-        notification=(LinearLayout) findViewById(R.id.notification);
-        mNext=(Button)findViewById(R.id.main_fm_btn_next);
+
+        notification=findViewById(R.id.notification);
+        collection = (TextView)findViewById(R.id.toolbox_collection_title);
+        setting=(TextView)findViewById(R.id.toolbox_setting_title);
 
         mRemoteView = new RemoteViews(this.getPackageName(), R.layout.activity_notification);
         //初始化播放按钮
@@ -136,24 +140,24 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
 
         // 初始化收藏页面，防止空指针
         finder2 = new CollectionFinderUtils();
-        favoritemusiclist = finder2.getCollectionMusic(this);
-        colletctionCount = finder2.getcount();
+        favoriteMusicList = finder2.getCollectionMusic(this);
+        collectionCount = finder2.getcount();
 
 
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         //加载歌曲
         finder = new FindSongsUtils();
-        musiclist = finder.getMusic(MainActivity.this.getContentResolver());
+        musicList = finder.getMusic(MainActivity.this.getContentResolver());
         count = finder.getCount(MainActivity.this.getContentResolver());
-        finder.setListAdpter(getApplicationContext(), musiclist, listView);
+        finder.setListAdpter(getApplicationContext(), musicList, listView);
 
         //设置当前歌曲
         if (MainActivity.currentMusicList == Constants.NORMALLIST) {
-            currentMusic = musiclist.get(currentPosition);
+            currentMusic = musicList.get(currentPosition);
             listView.setSelection(currentPosition);
         } else {
-            currentMusic = musiclist.get(collectionMusicPosition);
+            currentMusic = musicList.get(collectionMusicPosition);
             listView.setSelection(collectionMusicPosition);
         }
 
@@ -162,10 +166,10 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
         musicArtist.setText(currentMusic.getArtist());
 
         //底部状态栏广播注册
-        musicinfo = new bottomMusicInfoBroadcast();
+        musicInfo = new bottomMusicInfoBroadcast();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.example.mainSurface_bottom_music_statement");
-        registerReceiver(musicinfo, intentFilter);
+        registerReceiver(musicInfo, intentFilter);
 
         //收藏夹更新广播注册
         collectionUpdateBroadcast = new collectionUpdateBroadcast();
@@ -190,6 +194,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
         roundedImageView.setOnClickListener(this);
         collection.setOnClickListener(this);
         playModel.setOnClickListener(this);
+        setting.setOnClickListener(this);
 
     }
 
@@ -197,12 +202,12 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        MainActivity.currentMusicList = Constants.COLLECTIONLIST;
+        MainActivity.currentMusicList=Constants.NORMALLIST;
+        currentPosition = position;
         mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
         Intent intent = new Intent(MainActivity.this, PlayerService.class);
-        currentPosition = position;
-        MainActivity.currentMusicList=Constants.NORMALLIST;
         startService(intent);
+
 
         //打开APP第一次播放音乐时设置播放状态栏
 
@@ -230,8 +235,6 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
 
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(1, mBuilder.build());
-
-
 
         notificationCount++;
         //更新下方状态栏歌曲信息
@@ -302,7 +305,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
 
                 break;
 
-            case R.id.toolbox_collection:
+            case R.id.toolbox_collection_title:
                 Intent intent4 = new Intent(MainActivity.this, MusicCollectionActivity.class);
                 startActivity(intent4);
                 break;
@@ -310,6 +313,10 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
             case R.id.notification:
                 Intent intent5=new Intent(MyApplication.getContext(),MainActivity.class);
                 startActivity(intent5);
+            case R.id.toolbox_setting_title:
+                Intent intent7=new Intent(MainActivity.this,SettingActivity.class);
+                startActivity(intent7);
+
         }
     }
 
@@ -344,8 +351,8 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
     private class collectionUpdateBroadcast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            favoritemusiclist = finder2.getCollectionMusic(MyApplication.getContext());
-            colletctionCount = finder2.getcount();
+            favoriteMusicList = finder2.getCollectionMusic(MyApplication.getContext());
+            collectionCount = finder2.getcount();
         }
     }
 
@@ -366,7 +373,7 @@ public class MainActivity extends Activity implements OnItemClickListener, OnCli
         super.onDestroy();
         if (sensorManager != null)
             sensorManager.unregisterListener(listener);
-        unregisterReceiver(musicinfo);
+        unregisterReceiver(musicInfo);
         unregisterReceiver(notifyMusicInfo);
         unregisterReceiver(collectionUpdateBroadcast);
         Log.d("主界面销毁", "已销毁");

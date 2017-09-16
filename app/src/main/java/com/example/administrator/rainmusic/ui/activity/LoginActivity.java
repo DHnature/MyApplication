@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.example.administrator.rainmusic.R;
 import com.example.administrator.rainmusic.constant.Constants;
-import com.example.administrator.rainmusic.db.MyDatabaseHelper;
 import com.example.administrator.rainmusic.httpservice.LoginServiceUtils;
 import com.example.administrator.rainmusic.httpservice.RegisterServiceUtils;
 
@@ -24,7 +23,6 @@ import com.example.administrator.rainmusic.httpservice.RegisterServiceUtils;
 public class LoginActivity extends Activity {
 	private Button login;
 	private Button register;
-	public MyDatabaseHelper databaseHelper;
 	private EditText username;
 	private EditText password;
 	private ProgressDialog dialog;

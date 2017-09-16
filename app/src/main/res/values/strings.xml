@@ -17,4 +17,8 @@
     <string name="updated_just_now">刚刚更新</string>
     <string name="time_error">时间有问题</string>
     <string name="empty" />
+    <string name="setting_earphone_pause">拔出耳机自动暂停</string>
+    <string name="setting_change_pic">甩动手机切换歌曲封面</string>
+    <string name="setting_clear_cache">清除缓存</string>
+
 </resources>

@@ -9,16 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Window;
 
-
-import com.example.administrator.rainmusic.MainActivity;
 import com.example.administrator.rainmusic.R;
 import com.example.administrator.rainmusic.adapter.MyPagerAdapter;
-import com.example.administrator.rainmusic.config.MyApplication;
-import com.example.administrator.rainmusic.constant.Constants;
-import com.example.administrator.rainmusic.httpservice.HttpUtil;
-import com.example.administrator.rainmusic.interfaces.LyricHttpCallBackListener;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 
@@ -71,21 +64,11 @@ public class MusicSurfaceFragment extends FragmentActivity {
                 Intent intent = new Intent("com.example.mediaplayer.changeNameOfMusicInCircle");
                 sendBroadcast(intent);
 
-                HttpUtil.SearchMusic(MyApplication.getContext(), URLEncoder.encode(MainActivity.currentMusic.getTitle()),
-                        10, 1, 0, Constants.SEARCH_PICURL, new LyricHttpCallBackListener() {
-                            @Override
-                            public void onFinish(String response) {
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                            }
-                        });
-
+                Intent intent2=new Intent("com.example.picUpdate");
+                sendBroadcast(intent2);
             }
             //切换第二页面时自动刷新歌词
             if (arg0 == 1) {
-
                 new Thread(new LyricFragment.lyricThread()).start();
             }
 

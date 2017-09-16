@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"  
         android:layout_height="fill_parent" >  
      <ListView
-        android:id="@+id/listview"
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="500dp"/>
     </com.example.administrator.rainmusic.weiget.RefreshableView>

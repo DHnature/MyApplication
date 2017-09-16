@@ -7,10 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,24 +21,21 @@ import com.example.administrator.rainmusic.R;
 import com.example.administrator.rainmusic.config.MyApplication;
 import com.example.administrator.rainmusic.constant.Constants;
 import com.example.administrator.rainmusic.httpservice.HttpUtil;
-import com.example.administrator.rainmusic.httpservice.PictureUtil;
+import com.example.administrator.rainmusic.httpservice.PicHandleUtil;
 import com.example.administrator.rainmusic.interfaces.LyricHttpCallBackListener;
 import com.example.administrator.rainmusic.interfaces.PicHttpCallBackListener;
-import com.example.administrator.rainmusic.model.Music;
 import com.example.administrator.rainmusic.service.PlayerService;
 import com.example.administrator.rainmusic.weiget.MusicPlayView;
 
 import java.net.URLEncoder;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.ArrayList;
 
 public class MusicPlayFragment extends Fragment implements OnClickListener {
 
-    private static String picpool[];
     private static MusicPlayView mPlayView;
     private static int mResource;
-
     private static int flag = 0;
     private static int finish = 0;
     private Button mPrevious;
@@ -51,75 +45,9 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
     private TextView mTextViewDuration;
     private TextView mTextViewCurrentTime;
     private TextView title;
-    private List<Music> musiclist;
     private MusicBroadcast musicBroadcast;
-    private MusicName musicName;
-
-
-    public static Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case Constants.VAGUE:
-                    break;
-                case Constants.ROTATE_OPEN:
-                    mResource = R.drawable.bg_default1;
-                    mPlayView.previous(mResource);
-                    mPlayView.play();
-                    break;
-                case Constants.ROTATE_CLOSE:
-                    mPlayView.pause();
-                    break;
-                case Constants.SEARCH_PICURL:
-                    String s = (String) msg.obj;
-                    String ss[] = s.split("\"picUrl\"" + ":");
-                    int endindex = 0, i = 0, k;
-                    String temp;
-                    picpool = new String[ss.length];
-                    for (int j = 0; j < ss.length - 1; j++) {
-                        temp = (String) ss[j].subSequence(Constants.defaultbeign, Constants.defaultend);
-                        if (temp.equals("null") == false) {
-                            endindex = ss[j].indexOf("\"", 1);
-                            picpool[i] = ss[j].substring(Constants.defaultbeign + 1, endindex);
-                            picpool[i] = picpool[i].replace("\\", "");
-                            i++;
-                            Log.d("图片信息", picpool[i - 1]);
-                        }
-                    }
-                    flag = 0;
-                    for (k = 0; k < i - 1 && flag == 0; k++) {
-                        //finish为了同步插入图片和循环
-                        finish = 0;
-                        String path = picpool[k];
-                        PictureUtil.loadImageFromNetwork(path, new PicHttpCallBackListener() {
-                            @Override
-                            public void onFinish(Drawable drawable) {
-                                if (drawable != null) {
-                                    mPlayView.switchImage(drawable);
-                                    flag = 1;
-                                }
-                                finish = 1;
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                Log.d("错误", e.getMessage());
-
-                                finish = 1;
-                            }
-                        });
-                        while (finish == 0) {
-                        }
-
-                    }
-                    if (flag == 0) {
-                        mResource = R.drawable.bg_default2;
-                        mPlayView.previous(mResource);
-                        if (MainActivity.mediaplayer.isPlaying())
-                            mPlayView.play();
-                    }
-            }
-        }
-    };
+    private picUpdateBroadcast  picUpdateBroadcast;
+    private musicTitleUpdate musicName;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -146,21 +74,11 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
 
         }
 
+        new Thread(new pictureThread()).start();
+
 
 /*旋转盘内设置专辑图片，若搜索错误，则使用默认图片*/
-        HttpUtil.SearchMusic(MyApplication.getContext(), URLEncoder.encode(MainActivity.currentMusic.getTitle()),
-                10, 1, 0, Constants.SEARCH_PICURL, new LyricHttpCallBackListener() {
-                    @Override
-                    public void onFinish(String response) {
 
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        mResource = R.drawable.bg_default1;
-                        mPlayView.previous(mResource);
-                    }
-                });
 
 
 //歌曲时长
@@ -171,7 +89,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
         //设置进度条长度
         mSeekBar.setMax(MainActivity.currentMusic.getDuration());
 
-//歌曲播放时长监听广播注册
+        //歌曲播放时长监听广播注册
         musicBroadcast = new MusicBroadcast();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.example.mediaplayer.musictime");
@@ -179,14 +97,21 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
 
 
         //自动更新歌曲名广播注册
-        musicName = new MusicName();
+        musicName = new musicTitleUpdate();
         IntentFilter intentFilter2 = new IntentFilter();
         intentFilter2.addAction("com.example.mediaplayer.changeNameOfMusicInCircle");
         getActivity().registerReceiver(musicName, intentFilter2);
 
+        //
+        picUpdateBroadcast=new picUpdateBroadcast();
+        IntentFilter intentFilter3=new IntentFilter();
+        intentFilter3.addAction("com.example.picUpdate");
+        getActivity().registerReceiver(picUpdateBroadcast,intentFilter3);
+
         mPlayPause.setOnClickListener(this);
         mNext.setOnClickListener(this);
         mPrevious.setOnClickListener(this);
+        //进度条滑动控制
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -231,27 +156,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                 intent2.putExtra("start_type", Constants.START_TYPE_OPERATION);
                 intent2.putExtra("operation", Constants.OPEARTION_PREVIOUS_MUSIC);
                 getActivity().startService(intent2);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        HttpUtil.SearchMusic(MyApplication.getContext(), URLEncoder.
-                                        encode(MainActivity.currentMusic.getTitle()),
-                                10, 1, 0, Constants.SEARCH_PICURL, new LyricHttpCallBackListener() {
-                                    @Override
-                                    public void onFinish(String response) {
-                                        HttpUtil.Cloud_Muisc_getLrcAPI(getActivity(), "pc", LyricFragment.lyricId);
-                                    }
-
-                                    @Override
-                                    public void onError(Exception e) {
-                                        mResource = R.drawable.bg_default1;
-                                        mPlayView.previous(mResource);
-                                    }
-                                });
-                    }
-                }, 200);
                 break;
 
             case R.id.btn_next:
@@ -260,26 +165,7 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                 intent3.putExtra("start_type", Constants.START_TYPE_OPERATION);
                 intent3.putExtra("operation", Constants.OPEARTION_NEXT_MUSIC);
                 getActivity().startService(intent3);
-                Handler handler2 = new Handler();
-                handler2.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        HttpUtil.SearchMusic(MyApplication.getContext(), URLEncoder.
-                                encode(MainActivity.currentMusic.getTitle()), 10, 1, 0, Constants.SEARCH_PICURL, new LyricHttpCallBackListener() {
-                            @Override
-                            public void onFinish(String response) {
-                                HttpUtil.Cloud_Muisc_getLrcAPI(getActivity(), "pc", LyricFragment.lyricId);
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                mResource = R.drawable.bg_default1;
-                                mPlayView.previous(mResource);
-                            }
-                        });
-                    }
-                }, 200);
 
 
                 break;
@@ -291,14 +177,14 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
 
     @Override
     public void onDestroy() {
-        Log.d("销毁情况", "已被销毁");
         getActivity().unregisterReceiver(musicName);
         getActivity().unregisterReceiver(musicBroadcast);
+        getActivity().unregisterReceiver(picUpdateBroadcast);
         super.onDestroy();
     }
 
     //歌曲当前播放进度及歌曲总时长监听广播
-    public class MusicBroadcast extends BroadcastReceiver {
+    private class MusicBroadcast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             int type = intent.getIntExtra("type", 0);
@@ -312,10 +198,10 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
                     mTextViewDuration.setText(formatDuration.format(dateDuration));
                     break;
                 case PlayerService.CURRENT_TIME_TYPE:
-                    int currenttime = intent.getIntExtra("time", 50);
-                    Date dateCurrentTime = new Date(currenttime);
+                    int currentTime = intent.getIntExtra("time", 50);
+                    Date dateCurrentTime = new Date(currentTime);
                     SimpleDateFormat formatCurrent = new SimpleDateFormat("mm:ss");
-                    mSeekBar.setProgress(currenttime);
+                    mSeekBar.setProgress(currentTime);
                     mTextViewCurrentTime.setText(formatCurrent.format(dateCurrentTime));
                     break;
                 default:
@@ -323,17 +209,82 @@ public class MusicPlayFragment extends Fragment implements OnClickListener {
 
             }
         }
+ }
+ //更新歌图片广播
+    private class picUpdateBroadcast extends BroadcastReceiver{
+     @Override
+     public void onReceive(Context context, Intent intent) {
+         new Thread(new pictureThread()).start();
+     }
+ }
 
 
-    }
-
-    //歌曲播放完毕后自动更换标题广播
-    public class MusicName extends BroadcastReceiver {
+    //播放页面标题更新
+    private  class musicTitleUpdate extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             mPlayPause.setBackgroundResource(R.drawable.btn_ctrl_play);
             title.setText(MainActivity.currentMusic.getTitle());
+ }
+    }
+//加载图片
+    private class pictureThread implements Runnable {
+        PicHandleUtil p1=new PicHandleUtil();
+        @Override
+        public void run() {
+            if (p1.picCache(MainActivity.currentMusic.getTitle(), MainActivity.currentMusic.getArtist())) {
+                Drawable drawable = p1.getFicFile(MainActivity.currentMusic.getTitle(), MainActivity.currentMusic.getArtist());
+                mPlayView.switchImage(drawable);
+            } else {
+                HttpUtil.SearchMusic(MyApplication.getContext(), URLEncoder.encode(MainActivity.currentMusic.getTitle()), 10, 1, 0, new
+                        LyricHttpCallBackListener() {
+                            @Override
+                            public void onFinish(String response) {
+                                ArrayList<String> picUrl = PicHandleUtil.getPicUrl(response);
+                                flag = 0;
+                                for (int k = 0; k < picUrl.size() - 1 && flag == 0; k++) {
+                                    String path = picUrl.get(k);
+                                    //finish为了同步插入图片和循环
+                                    finish = 0;
+                                    PicHandleUtil.loadImageFromNetwork(path, new PicHttpCallBackListener() {
+                                        @Override
+                                        public void onFinish(Drawable drawable) {
+                                            if (drawable != null) {
+                                                p1.savePicFile(MainActivity.currentMusic.getTitle(),
+                                                        MainActivity.currentMusic.getArtist(), drawable);
+                                                mPlayView.switchImage(drawable);
+                                                flag = 1;
+                                            }
+                                            finish = 1;
+                                        }
+                                        @Override
+                                        public void onError(Exception e) {
+                                            finish = 1;
+                                        }
+                                    });
+                                    while (finish == 0) {
+                                    }
+                                }
+                                if (flag == 0) {
+                                    mResource = R.drawable.bg_default2;
+                                    mPlayView.previous(mResource);
+                                    if (MainActivity.mediaplayer.isPlaying())
+                                        mPlayView.play();
+                                }
+                            }
+                            @Override
+                            public void onError(Exception e) {
+                            }
+                        });
 
+
+            }
         }
     }
+
+
+
+
+
+
 }

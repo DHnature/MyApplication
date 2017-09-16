@@ -21,13 +21,13 @@ import java.util.regex.Pattern;
  * Created by Administrator on 2017/7/29.
  */
 
-public class LyricUtils {
+public class LyricHandleUtils {
     private static List<String> lrcList = new ArrayList<String>();
     private static boolean cache = false;
-    public static String root = Environment.getExternalStorageDirectory().toString(); //获取存储卡目录
+    private  String root = Environment.getExternalStorageDirectory().toString(); //获取存储卡目录
 
     //缓存歌词
-    public void saveLrcFile(String musicName, String artist, List<String> lrcList) {  // 参数名是歌曲名称，如 ：幻听.mp3
+    public void saveLrcFile(String musicName, String artist, List<String> lrcList) {
         try {
             //检查文件夹是否存在，若无，则新建文件夹
             File playerCache = new File(root + "/PlayerCache/");
@@ -70,7 +70,7 @@ public class LyricUtils {
         return lrcList;
     }
 
-    //检查歌词是否缓存，若果
+    //检查歌词是否缓存
     public boolean LyricCache(String musicName, String artist) {
         String path = root + "/PlayerCache/" + "/lyric/" + musicName + "-" + artist + ".lrc";
         //检查是否有SD卡
@@ -82,7 +82,7 @@ public class LyricUtils {
             else
                 cache = false;
         } else {
-            //如果没有SD卡，逻辑等下写。。。。
+            //如果没有SD卡，逻辑待完善。。。。
         }
         return cache;
     }
@@ -116,7 +116,7 @@ public class LyricUtils {
         else
             return 0;
     }
-    public static boolean isNumeric(String str) {
+    private  boolean isNumeric(String str) {
         // 该正则表达式可以匹配所有的数字 包括负数
         Pattern pattern = Pattern.compile("-?[0-9]+\\.?[0-9]*");
         String bigStr;
